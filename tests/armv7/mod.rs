@@ -705,6 +705,15 @@ fn test_register_shift_with_zero_immediate() {
     test_armv6([0x41, 0x00, 0x20, 0x00], "eoreq r0, r0, r1, asr 32");
 }
 
+#[test]
+fn test_rrx_immediate_shift_decode() {
+    // Previous versions of this crate would incorrectly decode this as
+    // "and r0, r1, r2, ror 0", which is wrong. When the argument of an immediate ROR shift is 0,
+    // it actually specifies an entirely different shift mode called RRX which only shifts by one
+    // to the right and populates the MSB with the carry flag.
+    test_all([0x62, 0x00, 0x01, 0xe0], "and r0, r1, r2, rrx");
+}
+
 static INSTRUCTION_BYTES: [u8; 4 * 60] = [
         0x24, 0xc0, 0x9f, 0xe5,
         0x00, 0xb0, 0xa0, 0xe3,

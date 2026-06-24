@@ -100,19 +100,21 @@ impl<T: DisplaySink> DisplayingOperandVisitor<'_, T> {
                 if imm_shift.imm() != 0 || imm_shift.stype() != ShiftStyle::LSL {
                     self.f.write_fixed_size(", ")?;
                     self.emit_shift_type(imm_shift.stype())?;
-                    self.f.write_char(' ')?;
-                    let sh = imm_shift.imm();
-                    if sh >= 30 {
-                        self.f.write_char('3')?;
-                        self.f.write_char((sh - 30 + 0x30) as char)?;
-                    } else if sh >= 20 {
-                        self.f.write_char('2')?;
-                        self.f.write_char((sh - 20 + 0x30) as char)?;
-                    } else if sh >= 10 {
-                        self.f.write_char('1')?;
-                        self.f.write_char((sh - 10 + 0x30) as char)?;
-                    } else {
-                        self.f.write_char((sh + 0x30) as char)?;
+                    if imm_shift.stype() != ShiftStyle::RRX {
+                        self.f.write_char(' ')?;
+                        let sh = imm_shift.imm();
+                        if sh >= 30 {
+                            self.f.write_char('3')?;
+                            self.f.write_char((sh - 30 + 0x30) as char)?;
+                        } else if sh >= 20 {
+                            self.f.write_char('2')?;
+                            self.f.write_char((sh - 20 + 0x30) as char)?;
+                        } else if sh >= 10 {
+                            self.f.write_char('1')?;
+                            self.f.write_char((sh - 10 + 0x30) as char)?;
+                        } else {
+                            self.f.write_char((sh + 0x30) as char)?;
+                        }
                     }
                 }
             }
